@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- CSS stylesheet -->
+<link rel="stylesheet" type="text/css" href="{{ url_for ('static', filename = 'CSS/app.css') }}">
+
+<div class="row">
+    
+    <div>
+        <br><br>
+        <h3>Current Date:
+            <select name="datepicker" id="datepicker">
+                {% for value in date_list %}
+                <option value='{{value}}'>{{ value }}</option>
+                {% endfor %}
+            </select>
+        </h3>
+        <br> <br>
+        <p><i>Please notice that, the calculation is based on <b>Close</b> value.</i></p>
+        <p><i>Due to the lack of data, 24 hours difference, 7 days differece and 30 days difference moght be displayed as <b>"-"</b>.</i></p>
+        <table class="table table-dark">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Coin</th>
+                <th scope="col">Price</th> 
+                <th scope="col">24h</th>
+                <th scope="col">7d</th>
+                <th scope="col">30d</th>
+                <th scope="col">24h Volume</th>
+                <th scope="col">Mkt Cap</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+                {% for values in lists %}
+                <tr>
+                <th scope="row">{{ values["index"] }}</th>
+                <td>{{ values["currency"] }}</td>
+                <td>{{ values["price"] }}</td> 
+                <td class='{{values["24h color"]}}'>{{ values["24h"] }}</td>
+                <td class='{{values["7d color"]}}'>{{ values["7d"] }}</td>
+                <td class='{{values["30d color"]}}'>{{ values["30d"] }}</td>
+                <td>{{ values["24h Volume"] }}</td>
+                <td>{{ values["Mkt Cap"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- Javascript -->
+<script src="{{ url_for('static', filename= 'JS/app.js')}}"></script>
+
+
+{% endblock content %}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+  <title>UTU</title>
+
+  <!-- jQuery -->
+  <script src="{{ url_for('static', filename='JS/jquery-3.5.1.min.js')}}"></script>
+
+  <!-- <link rel="stylesheet" type="text/css" href="{{ url_for ('static', filename = 'CSS/base.css') }}"> -->
+
+</head>
+
+<body class="bg-dark">
+
+  <!-- Navigation bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+
+    <div class="container">
+
+      <h1>Currency Board</h1>
+
+
+
+      <ul class="navbar-nav ml-auto flex-nowrap text-center">
+
+      </ul>
+
+
+    </div>
+  
+  </nav>
+  <!-- Navigation bar end here -->
+
+  <div class="container" id="content">
+    {% block content %}
+    {% endblock %}
+
+  </div>
+
+  <!-- JS for Bootstrap -->
+  <script src=" {{ url_for('static', filename='JS/bootstrap/bootstrap.bundle.min.js')}}"></script>
+
+  <!-- CSS only -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='CSS/bootstrap/bootstrap.min.css')}}">
+
+</body>
+
+</html>
