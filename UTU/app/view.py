@@ -4,32 +4,43 @@ import pandas as pd
 import numpy as np
 import os
 import json
-from pymongo import MongoClient
+from datetime import datetime
+from pymongo import MongoClient, ASCENDING
 from app.connect import Connect
 
 ## Global variable
 
 client = Connect.get_connection()
 
-mydb = client["cryptocurrency"]
+mydb = client["test2"]
 
-mycol = mydb["currencydata"]
+mycol = mydb["test2"]
 
 # read from mongoDB
 df = pd.DataFrame(list(mycol.find()))
 
 # replace ','
 df = df.apply(lambda x: x.str.replace(r',', ''))
+df = df.to_dict('records')
+
+# sort the dictionary in descending order
+df = sorted(df, key = lambda x: datetime.strptime(x['Date'], '%b %d %Y'), reverse=True)
+
+# convert back to dataframe
+df = pd.DataFrame.from_dict(df)
 
 # get all the date
 date_list = df['Date'].unique().tolist()
 
+# sort date_list in descending order
+date_list = sorted(date_list, key = lambda date: datetime.strptime(date, '%b %d %Y'), reverse=True)
 
 @app.route('/')
 def home():
 
     #make a copy of original data file and set data types
     df2 = set_data_type(df.copy())
+    # print(df2)
     
     # create a new DataFrame to contain the list for display.
     df_displayList_copy = copy_DataFrame()
@@ -48,7 +59,7 @@ def home():
 
     # call sort method to sort the data in descending order
     sorted_result = sort(df_displayList_copy, 'Mkt Cap', False)
-
+    
     # return the web page with a 'list' like dictionary.
     return render_template('home.html', lists=sorted_result.to_dict('records'), date_list=date_list)
 
@@ -69,7 +80,6 @@ def datepicker():
         # store the selected date
         selected_date = req['selected_date']
 
-        # date_list = session["date_list"]
         df_displayList_copy = copy_DataFrame()
 
         # retrieve currency list from session variable
@@ -79,7 +89,7 @@ def datepicker():
         for i in range(len(currency_list)):
             result = calculation(df2, currency_list[i], selected_date)
             df_displayList_copy = df_displayList_copy.append(result, ignore_index=True)
-            df_displayList_copy['dateofdata'] = selected_date
+            # df_displayList_copy['dateofdata'] = selected_date
 
         sorted_result = sort(df_displayList_copy, 'Mkt Cap', False)
 
@@ -113,9 +123,13 @@ def calculation(df, name, current_date):
 
     # filter result with the date
     df_calculation = df_calculation[df_calculation["Date"] <= current_date]
+    # df_calculation = sorted(df_calculation.to_dict('list'), key = lambda x: datetime.strptime(x['Date'], '%Y-%m-%d %H:%M:%S'), reverse=True)
+    # print(df_calculation)
 
     # make it as dictionary
     df_calculation = df_calculation.to_dict('list')
+
+    # print(df_calculation)
 
     color_24h = ""
     color_7d = ""
